@@ -1,4 +1,14 @@
-﻿window.getDiagramSize = function () {
+﻿var parentElement;
+var parentDotNetObj;
+window.setParentElement = function (element, dotnetObj) {
+    parentElement = element;
+    parentDotNetObj = dotnetObj;
+    parentElement.onscroll = function (args) {
+        return dotnetObj.invokeMethodAsync("ScrollChange", { "X": args.target.scrollLeft, "Y": args.target.scrollTop });
+    }
+}
+
+window.getDiagramSize = function () {
     var element = document.getElementById("canvas");
     var bounds = element.getBoundingClientRect();
     var size = {};
@@ -7,15 +17,9 @@
     return size;
 }
 
-window.getScrollSize = function (element) {
-    var scrollSize = {};
-    scrollSize["X"] = element.scrollLeft;
-    scrollSize["Y"] = element.scrollTop;
-    return scrollSize;
+window.setPanScroll = function (left, top) {
+    parentElement.scrollLeft += left;
+    parentElement.scrollTop += top;
+    return { "X": parentElement.scrollLeft, "Y": parentElement.scrollTop };
 }
 
-window.setPanScroll = function (element, left, top) {
-    element.scrollLeft += left;
-    element.scrollTop += top;
-    return { "X": element.scrollLeft, "Y": element.scrollTop };
-}
